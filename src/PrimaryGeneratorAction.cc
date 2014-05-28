@@ -38,7 +38,7 @@
 
 #include "G4RunManager.hh"
 #include "G4Event.hh"
-#include "G4ParticleGun.hh"
+#include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
@@ -49,7 +49,7 @@
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
   G4int n_particle = 1;
-  particleGun  = new G4ParticleGun(n_particle);
+  particleSource  = new G4GeneralParticleSource();
   Detector = (DetectorConstruction*)
              G4RunManager::GetRunManager()->GetUserDetectorConstruction();  
   
@@ -62,11 +62,9 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   G4String particleName;
   G4ParticleDefinition* particle
                     = particleTable->FindParticle(particleName="e-");
-  particleGun->SetParticleDefinition(particle);
-  particleGun->SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));
-  particleGun->SetParticleEnergy(50.*MeV);
+  particleSource->SetParticleDefinition(particle);
   G4double position = -0.5*(Detector->GetWorldSizeX());
-  particleGun->SetParticlePosition(G4ThreeVector(position,0.*cm,0.*cm));
+  particleSource->SetParticlePosition(G4ThreeVector(position,0.*cm,0.*cm));
   
   rndmFlag = "off";
 
@@ -76,7 +74,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
-  delete particleGun;
+  delete particleSource;
   delete gunMessenger;
 }
 
@@ -92,9 +90,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
      {y0 = (Detector->GetCalorSizeYZ())*(G4UniformRand()-0.5);
       z0 = (Detector->GetCalorSizeYZ())*(G4UniformRand()-0.5);
      } 
-  particleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+  particleSource->SetParticlePosition(G4ThreeVector(x0,y0,z0));
 
-  particleGun->GeneratePrimaryVertex(anEvent);
+  particleSource->GeneratePrimaryVertex(anEvent);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

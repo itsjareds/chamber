@@ -97,6 +97,7 @@ int main(int argc,char** argv)
 
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
+  UImanager->ApplyCommand("/control/execute beam.mac");
 
   if (argc!=1)   // batch mode
     {
