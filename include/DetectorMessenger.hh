@@ -57,7 +57,7 @@ class DetectorMessenger: public G4UImessenger
   private:
     DetectorConstruction* Detector;
     
-    G4UIdirectory*             N03Dir;
+    G4UIdirectory*             ChamberDir;
     G4UIdirectory*             detDir;
     G4UIcmdWithAString*        AbsMaterCmd;
     G4UIcmdWithAString*        GapMaterCmd;

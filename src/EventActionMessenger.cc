@@ -43,10 +43,10 @@
 EventActionMessenger::EventActionMessenger(EventAction* EvAct)
 :eventAction(EvAct)
 {
-  eventDir = new G4UIdirectory("/N03/event/");
+  eventDir = new G4UIdirectory("/Chamber/event/");
   eventDir->SetGuidance("event control");
    
-  PrintCmd = new G4UIcmdWithAnInteger("/N03/event/printModulo",this);
+  PrintCmd = new G4UIcmdWithAnInteger("/Chamber/event/printModulo",this);
   PrintCmd->SetGuidance("Print events modulo n");
   PrintCmd->SetParameterName("EventNb",false);
   PrintCmd->SetRange("EventNb>0");

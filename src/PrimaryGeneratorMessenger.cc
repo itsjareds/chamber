@@ -43,10 +43,10 @@ PrimaryGeneratorMessenger::PrimaryGeneratorMessenger(
                                           PrimaryGeneratorAction* Gun)
 :Action(Gun)
 {
-  gunDir = new G4UIdirectory("/N03/gun/");
+  gunDir = new G4UIdirectory("/Chamber/gun/");
   gunDir->SetGuidance("PrimaryGenerator control");
    
-  RndmCmd = new G4UIcmdWithAString("/N03/gun/rndm",this);
+  RndmCmd = new G4UIcmdWithAString("/Chamber/gun/rndm",this);
   RndmCmd->SetGuidance("Shoot randomly the incident particle.");
   RndmCmd->SetGuidance("  Choice : on(default), off");
   RndmCmd->SetParameterName("choice",true);
