@@ -1,3 +1,6 @@
+# main beam
+/gps/source/intensity 5.
+
 /gps/particle gamma
 
 /gps/pos/type Beam
@@ -9,7 +12,25 @@
 
 /gps/direction 1 0 0
 
-/gps/ene/type Brem
-/gps/ene/min 2. MeV
-/gps/ene/max 10. MeV
-/gps/ene/temp 1000
+/gps/ene/type Gauss
+/gps/ene/mono 3. keV
+/gps/ene/sigma 10 eV
+
+# secondary beam
+
+/gps/source/add 1.
+
+/gps/particle gamma
+
+/gps/pos/type Beam
+/gps/pos/shape Circle
+/gps/pos/centre -3. 0. 0. cm
+/gps/pos/radius 3. cm
+
+/gps/pos/rot1 0 0 1 
+
+/gps/direction 1 0 0
+
+/gps/ene/type Gauss
+/gps/ene/mono 3.5 keV
+/gps/ene/sigma 10 eV

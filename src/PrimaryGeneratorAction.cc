@@ -55,18 +55,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   
   //create a messenger for this class
   gunMessenger = new PrimaryGeneratorMessenger(this);
-
-  // default particle kinematic
-
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4String particleName;
-  G4ParticleDefinition* particle
-                    = particleTable->FindParticle(particleName="e-");
-  particleSource->SetParticleDefinition(particle);
-  G4double position = -0.5*(Detector->GetWorldSizeX());
-  particleSource->SetParticlePosition(G4ThreeVector(position,0.*cm,0.*cm));
-  
-  rndmFlag = "off";
+  rndmFlag = "on";
 
 }
 
