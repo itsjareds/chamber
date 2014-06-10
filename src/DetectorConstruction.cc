@@ -124,6 +124,15 @@ G4Element* N  = new G4Element("Nitrogen",symbol="N" , z= 7., a= 14.01*g/mole);
 G4Element* O  = new G4Element("Oxygen"  ,symbol="O" , z= 8., a= 16.00*g/mole);
 G4Element* Si = new G4Element("Silicon",symbol="Si" , z= 14., a= 28.09*g/mole);
 G4Element* Be = new G4Element("Beryllium", symbol="Be" , z=04., a=9.012*g/mole);
+/* weights taken from Wikipedia from here on down */
+G4Element* S  = new G4Element("Sulfur", symbol="S", z=16., a=32.07*g/mole);
+G4Element* Na = new G4Element("Sodium", symbol="Na", z=11., a=22.99*g/mole);
+G4Element* Cl = new G4Element("Chlorine", symbol="Cl", z=17., a=35.45*g/mole);
+G4Element* P  = new G4Element("Phosphorus", symbol="P", z=15., a=30.97*g/mole);
+G4Element* K  = new G4Element("Potassium", symbol="K", z=19., a=39.10*g/mole);
+G4Element* Fe = new G4Element("Iron", symbol="Fe", z=26., a=55.845*g/mole);
+G4Element* Mg = new G4Element("Magnesium", symbol="Mg", z=12., a=24.305*g/mole);
+G4Element* Ca = new G4Element("Calcium", symbol="Ca", z=20., a=40.078*g/mole);
 
 //
 // define an Element from isotopes, by relative abundance 
@@ -188,6 +197,148 @@ G4Material* Air =
 new G4Material("Air"  , density= 1.290*mg/cm3, ncomponents=2);
 Air->AddElement(N, fractionmass=0.7);
 Air->AddElement(O, fractionmass=0.3);
+
+G4Material* Air2 = 
+new G4Material("Air2"  , density= 1.290*mg/cm3, ncomponents=2);
+Air2->AddElement(N, fractionmass=0.78);
+Air2->AddElement(O, fractionmass=0.22);
+
+G4Material* Plexiglas =
+new G4Material("Plexiglas", density= 1.19*g/cm3, ncomponents=3);
+Plexiglas->AddElement(H, fractionmass=0.0805);
+Plexiglas->AddElement(C, fractionmass=0.5999);
+Plexiglas->AddElement(O, fractionmass=0.3196);
+
+G4Material* Fat = 
+new G4Material("icru-44 fat", density= 0.95*gram/cm3, ncomponents=7);
+Fat->AddElement(H, fractionmass=0.114);
+Fat->AddElement(C, fractionmass=0.598);
+Fat->AddElement(N, fractionmass=0.007);
+Fat->AddElement(O, fractionmass=0.278);
+Fat->AddElement(Na, fractionmass=0.001);
+Fat->AddElement(S, fractionmass=0.001);
+Fat->AddElement(Cl, fractionmass=0.001);
+/*		("H", 0.114), ("C", 0.598), ("N", 0.007), ("O", 0.278),  
+		("Na", 0.001), ("S", 0.001), ("Cl", 0.001) */
+	
+G4Material* Blood =
+new G4Material("icru-44 blood", density= 1.06*gram/cm3, ncomponents=10);
+Blood->AddElement(H, fractionmass=0.102);
+Blood->AddElement(C, fractionmass=0.110);
+Blood->AddElement(N, fractionmass=0.033);
+Blood->AddElement(O, fractionmass=0.745);
+Blood->AddElement(Na, fractionmass=0.001);
+Blood->AddElement(P, fractionmass=0.001);
+Blood->AddElement(S, fractionmass=0.002);
+Blood->AddElement(Cl, fractionmass=0.003);
+Blood->AddElement(K, fractionmass=0.002);
+Blood->AddElement(Fe, fractionmass=0.001);
+/*		("H", 0.102), ("C", 0.110), ("N", 0.033), ("O", 0.745),  
+		("Na", 0.001), ("P", 0.001), ("S", 0.002), ("Cl", 0.003),
+		("K", 0.002), ("Fe", 0.001) */
+
+G4Material* Muscle =
+new G4Material("icru-44 skeletal muscle", density= 1.05*gram/cm3, ncomponents=9);
+Muscle->AddElement(H, fractionmass=0.102);
+Muscle->AddElement(C, fractionmass=0.143);
+Muscle->AddElement(N, fractionmass=0.034);
+Muscle->AddElement(O, fractionmass=0.710);
+Muscle->AddElement(Na, fractionmass=0.001);
+Muscle->AddElement(P, fractionmass=0.002);
+Muscle->AddElement(S, fractionmass=0.003);
+Muscle->AddElement(Cl, fractionmass=0.001);
+Muscle->AddElement(K, fractionmass=0.004);
+/*		("H", 0.102), ("C", 0.143), ("N", 0.034), ("O", 0.710),  
+		("Na", 0.001), ("P", 0.002), ("S", 0.003), ("Cl", 0.001),
+		("K", 0.004) */
+
+G4Material* Tissue =
+new G4Material("icru-44 soft tissue", density= 1.06*gram/cm3, ncomponents=9);
+Tissue->AddElement(H, fractionmass=0.102);
+Tissue->AddElement(C, fractionmass=0.143);
+Tissue->AddElement(N, fractionmass=0.034);
+Tissue->AddElement(O, fractionmass=0.708);
+Tissue->AddElement(Na, fractionmass=0.002);
+Tissue->AddElement(P, fractionmass=0.003);
+Tissue->AddElement(S, fractionmass=0.003);
+Tissue->AddElement(Cl, fractionmass=0.002);
+Tissue->AddElement(K, fractionmass=0.003);
+/*		("H", 0.102), ("C", 0.143), ("N", 0.034), ("O", 0.708),  
+		("Na", 0.002), ("P", 0.003), ("S", 0.003), ("Cl", 0.002),
+		("K", 0.003) */
+
+G4Material* Lung =
+new G4Material("icru-44 lung tissue", density= 0.26*gram/cm3, ncomponents=9);
+Lung->AddElement(H, fractionmass=0.103);
+Lung->AddElement(C, fractionmass=0.105);
+Lung->AddElement(N, fractionmass=0.031);
+Lung->AddElement(O, fractionmass=0.749);
+Lung->AddElement(Na, fractionmass=0.002);
+Lung->AddElement(P, fractionmass=0.002);
+Lung->AddElement(S, fractionmass=0.003);
+Lung->AddElement(Cl, fractionmass=0.003);
+Lung->AddElement(K, fractionmass=0.002);
+/*		("H", 0.103), ("C", 0.105), ("N", 0.031), ("O", 0.749),  
+		("Na", 0.002), ("P", 0.002), ("S", 0.003), ("Cl", 0.003),
+		("K", 0.002) */
+
+G4Material* Skin =
+new G4Material("icru-44 skin", density= 1.09*gram/cm3, ncomponents=9);
+Skin->AddElement(H, fractionmass=0.100);
+Skin->AddElement(C, fractionmass=0.204);
+Skin->AddElement(N, fractionmass=0.042);
+Skin->AddElement(O, fractionmass=0.645);
+Skin->AddElement(Na, fractionmass=0.002);
+Skin->AddElement(P, fractionmass=0.001);
+Skin->AddElement(S, fractionmass=0.002);
+Skin->AddElement(Cl, fractionmass=0.003);
+Skin->AddElement(K, fractionmass=0.001);
+/*		("H", 0.100), ("C", 0.204), ("N", 0.042), ("O", 0.645),  
+		("Na", 0.002), ("P", 0.001), ("S", 0.002), ("Cl", 0.003),
+		("K", 0.001) */
+
+G4Material* Cartilage =
+new G4Material("icru-44 cartilage", density= 1.10*gram/cm3, ncomponents=8);
+Cartilage->AddElement(H, fractionmass=0.096);
+Cartilage->AddElement(C, fractionmass=0.099);
+Cartilage->AddElement(N, fractionmass=0.022);
+Cartilage->AddElement(O, fractionmass=0.744);
+Cartilage->AddElement(Na, fractionmass=0.005);
+Cartilage->AddElement(P, fractionmass=0.022);
+Cartilage->AddElement(S, fractionmass=0.009);
+Cartilage->AddElement(Cl, fractionmass=0.003);
+/*		("H", 0.096), ("C", 0.099), ("N", 0.022), ("O", 0.744),  
+		("Na", 0.005), ("P", 0.022), ("S", 0.009), ("Cl", 0.003), */
+
+G4Material* Nerve =
+new G4Material("icru-44 brain", density= 1.04*gram/cm3, ncomponents=9);
+Nerve->AddElement(H, fractionmass=0.107);
+Nerve->AddElement(C, fractionmass=0.145);
+Nerve->AddElement(N, fractionmass=0.022);
+Nerve->AddElement(O, fractionmass=0.712);
+Nerve->AddElement(Na, fractionmass=0.002);
+Nerve->AddElement(P, fractionmass=0.004);
+Nerve->AddElement(S, fractionmass=0.002);
+Nerve->AddElement(Cl, fractionmass=0.003);
+Nerve->AddElement(K, fractionmass=0.003);
+/*		("H", 0.107), ("C", 0.145), ("N", 0.022), ("O", 0.712),  
+		("Na", 0.002), ("P", 0.004), ("S", 0.002), ("Cl", 0.003),
+		("K", 0.003) */
+
+G4Material* Bone =
+new G4Material("icru-44 bone", density= 1.92*gram/cm3, ncomponents=9);
+Bone->AddElement(H, fractionmass=0.034);
+Bone->AddElement(C, fractionmass=0.155);
+Bone->AddElement(N, fractionmass=0.042);
+Bone->AddElement(O, fractionmass=0.435);
+Bone->AddElement(Na, fractionmass=0.001);
+Bone->AddElement(Mg, fractionmass=0.002);
+Bone->AddElement(P, fractionmass=0.103);
+Bone->AddElement(S, fractionmass=0.003);
+Bone->AddElement(Ca, fractionmass=0.225);
+/*		("H", 0.034), ("C", 0.155), ("N", 0.042), ("O", 0.435),
+		("Na", 0.001), ("Mg", 0.002), ("P", 0.103), ("S", 0.003),
+		("Ca", 0.225) */
 
 //
 // define a material from elements and/or others materials (mixture of mixtures)
