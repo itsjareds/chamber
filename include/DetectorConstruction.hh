@@ -199,13 +199,13 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   private:
     
      void DefineMaterials();
-     void ComputeCalorParameters();
+     //void ComputeCalorParameters();
      G4VPhysicalVolume* ConstructCalorimeter();     
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void DetectorConstruction::ComputeCalorParameters()
+/*inline void DetectorConstruction::ComputeCalorParameters()
 {
   // Compute derived parameters of the calorimeter
      LayerThickness = AbsorberThickness + GapThickness;
@@ -217,7 +217,7 @@ inline void DetectorConstruction::ComputeCalorParameters()
      CalorThickness = NbOfLayers*LayerThickness;
      
      WorldSizeX = 1.2*CalorThickness; WorldSizeYZ = 1.2*CalorSizeYZ;
-}
+}*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

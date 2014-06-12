@@ -119,7 +119,9 @@ DetectorMessenger::~DetectorMessenger()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
-{ 
+{
+  // disabled for now because it breaks the build
+  /*
   if( command == AbsMaterCmd )
    { Detector->SetAbsorberMaterial(newValue);}
    
@@ -144,6 +146,7 @@ void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 
   if( command == MagFieldCmd )
    { Detector->SetMagField(MagFieldCmd->GetNewDoubleValue(newValue));}
+   */
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

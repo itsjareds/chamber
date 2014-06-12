@@ -65,24 +65,24 @@ DetectorConstruction::DetectorConstruction()
  magField(0)
 {
   // default parameter values of the calorimeter
-  AbsorberThickness = 250.*um;
+  /*AbsorberThickness = 250.*um;
   GapThickness      =  25.*um;
   Absorber2Thickness=  10.*um;
   Gap2Thickness     =  10.*um;
   Absorber3Thickness=   2.*mm;
   Gap3Thickness     =  31.*mm;
   NbOfLayers        =   1;
-  CalorSizeYZ       =  10.*cm;
-  ComputeCalorParameters();
+  CalorSizeYZ       =  10.*cm;*/
+  //ComputeCalorParameters();
   
   // materials
   DefineMaterials();
-  SetAbsorberMaterial("Beryllium");
+/*SetAbsorberMaterial("Beryllium");
   SetGapMaterial("Air");
   SetAbsorber2Material("Mylar");
   SetGap2Material("Water");
   SetAbsorber3Material("Water");
-  SetGap3Material("Air");
+  SetGap3Material("Air");*/
  
   // create commands for interactive definition of the calorimeter
   detectorMessenger = new DetectorMessenger(this);
@@ -133,6 +133,7 @@ G4Element* K  = new G4Element("Potassium", symbol="K", z=19., a=39.10*g/mole);
 G4Element* Fe = new G4Element("Iron", symbol="Fe", z=26., a=55.845*g/mole);
 G4Element* Mg = new G4Element("Magnesium", symbol="Mg", z=12., a=24.305*g/mole);
 G4Element* Ca = new G4Element("Calcium", symbol="Ca", z=20., a=40.078*g/mole);
+G4Element* W  = new G4Element("Tungsten", symbol="W", z=74., a=183.84*g/mole);
 
 //
 // define an Element from isotopes, by relative abundance 
@@ -148,11 +149,11 @@ U->AddIsotope(U8, abundance= 10.*perCent);
 //
 // define simple materials
 //
-
+/*
 new G4Material("Aluminium", z=13., a=26.98*g/mole, density=2.700*g/cm3);
 new G4Material("liquidArgon", z=18., a= 39.95*g/mole, density= 1.390*g/cm3);
 new G4Material("Lead"     , z=82., a= 207.19*g/mole, density= 11.35*g/cm3);
-
+*/
 //
 // define a material from elements.   case 1: chemical molecule
 //
@@ -188,6 +189,18 @@ Plastic->AddElement(C, natoms=8);
 G4Material* Beryllium =
 new G4Material("Beryllium", density=1.85*g/cm3, ncomponents=1);
 Beryllium->AddElement(Be, fractionmass=1);
+
+G4Material* Iron =
+new G4Material("Iron", density=7.874*g/cm3, ncomponents=1);
+Iron->AddElement(Fe, fractionmass=1);
+
+G4Material* Tungsten =
+new G4Material("Tungsten", density=19.25*g/cm3, ncomponents=1);
+Tungsten->AddElement(W, fractionmass=1);
+
+G4Material* Hydrogen =
+new G4Material("Hydrogen", density=0.08988*g/L, ncomponents=1);
+Hydrogen->AddElement(H, fractionmass=1);
 
 //
 // define a material from elements.   case 2: mixture by fractional mass
@@ -396,6 +409,8 @@ defaultMaterial  = Vacuum;
 
 G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 {
+  // Variables copied from fixedbeam30.py
+  G4double worldFullLength = 3.0*m;
 
   // Clean old geometry, if any
   //
@@ -405,13 +420,13 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
   G4SolidStore::GetInstance()->Clean();
 
   // complete the Calor parameters definition
-  ComputeCalorParameters();
+  //ComputeCalorParameters();
    
   //     
   // World
   //
   solidWorld = new G4Box("World",                             //its name
-                   WorldSizeX/2,WorldSizeYZ/2,WorldSizeYZ/2); //its size
+                   worldFullLength/2,worldFullLength/2,worldFullLength/2); //its size
                          
   logicWorld = new G4LogicalVolume(solidWorld,           //its solid
                                    defaultMaterial,      //its material
@@ -424,7 +439,430 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
                                  0,                      //its mother  volume
                                  false,                  //no boolean operation
                                  0);                     //copy number
-  
+
+ // Pasted from fixedbeam30.py
+		
+/*		int firstlayer=0;
+		int lastlayer=303; //#255
+		//#dataset_shape=(128,256,256)
+		dataset_shape=(512,512, 303) 
+		keep_organs=[4]
+		//#keep_organs=[0, 2, 4]
+				
+		detailedLayers=None
+		G4double visFraction=0.0001;
+		G4double x_pixel_size=0.625*mm;
+		G4double y_pixel_size=0.625*mm;
+		G4double z_pixel_size=0.625*mm;
+		bool useRLEbyOrgan=false;
+		bool useRLEbyMaterial=true;
+		
+		G4String voxelFile="ct_phantom.dat";
+
+		
+		G4String tissueMapFile="zubal_head_map.txt";
+		
+		quads, material_key=read_zubal_key(tissueMapFile)
+		data=smoother_debrecen.voxel_file(filename=voxelFile, shape=dataset_shape,
+			deltas=(x_pixel_size, y_pixel_size, z_pixel_size) )
+
+		materials_info=create_zubal_materials()
+		
+		G4double zcount=lastlayer-firstlayer;
+		xcount, ycount, junk = dataset_shape
+	
+		// Uncomment later?
+		//print xcount, ycount, zcount, Vector((x_pixel_size, y_pixel_size, z_pixel_size))
+		
+		if not orbOnly:
+			compressor=G4Core.mhmCompressedVoxels(
+				xcount, ycount, zcount, 
+				Vector((x_pixel_size, y_pixel_size, z_pixel_size)),
+				visFraction)
+					
+			colors={	'skin':G4Core.G4Colour(1,0,0, 0.5), 
+						'fat':G4Core.G4Colour(0,1,0, 0.5), 
+						'skull':G4Core.G4Colour(0,0,1,1), 
+						'jaw bone':G4Core.G4Colour(1,1,0,1), 
+						'cerebral fluid': G4Core.G4Colour(0,1,1,1)
+			}
+					
+			vis_attr_list=[]
+			faded=G4Core.G4Colour(1,1,1,1)
+			invisible=G4Core.G4VisAttributes(0, faded)
+
+			for junk, orgidx, name, matidx in quads:
+				compressor.SetOrganMaterial(orgidx, materials_info.tissuemap[matidx])
+
+				if (orgidx == 0) {
+					v=invisible //#organ 0 is always invisible
+				} else {
+					color=colors.get(name, None)
+					if color is None:
+						color=G4Core.G4Colour(
+							0.5*random.random()+0.25, 
+							0.5*random.random()+0.25,
+							0.5*random.random()+0.25, 1)
+					v=G4Core.G4VisAttributes(1, color)
+					v.SetForceSolid(1)
+					v.SetLineWidth(0.0)
+				}
+
+				vis_attr_list.append(v) //#keep ownership since we didn't disown these
+				compressor.SetOrganVisAttributes(orgidx, v)
+			
+			logic_vol=compressor.AssembleGeometry(physiWorld, "zubal", materials_info.air)
+						
+			phantomPhys = G4Support.Placement(logic_vol, "phantom", parent=logicWorld, pos=(0.,0.,0.))
+
+			for orgidx in keep_organs:
+				compressor.AddKeptOrgan(orgidx)
+				compressor.SetOrganVisSampling(orgidx,-1) //# < 0 forces visibility
+
+			for (int iz = firstlayer; iz < lastlayer; ++iz) {
+				detailed = (detailedLayers is None or iz in detailedLayers)
+				compressor.CompressAndAppendVoxelPlane(
+					data.get_plane(iz), detailed,  useRLEbyOrgan, useRLEbyMaterial
+				)
+			}
+			
+			compressor.BuildContainerSolid(phantomPhys);
+			
+		else:
+			G4Orb* phantomSolid = new G4Orb("sphere", 100.0*mm)
+			G4LogicalVolume* phantomLog = new G4LogicalVolume(phantomSolid, material=Tissue, name="orb");
+			phantomPhys=Placement(phantomLog, 'orb', parent=logicWorld, pos=(0,0,0))
+			phantomLog.SetForceWireFrame(True)	
+			phantomLog.vis.SetForceAuxEdgeVisible(True)	
+
+		// Uncomment later?				
+		G4cout << "Phantom fully populated\n";
+		
+
+		//#########################
+		//#### source construction
+		//#########################
+		
+
+
+		sourceAssembly=G4Support.AssemblyVolume()
+
+		//####container
+		G4double containerOuterDiam= 107.6352;
+		G4double containerHeight = 50.0126 + 51.5*2 + 89 + 1.5;
+		G4double containerPosX=0.0;
+		G4double containerPosY=0.0;
+		G4double containerPosZ=0.0;
+		
+		G4Tubs* containerSolid = new G4Tubs("containerSolid", 0, containerOuterDiam/2, containerHeight/2, 0.0, 2.0*pi);
+		G4LogicalVolume* container = new G4LogicalVolume(containerSolid, material=Hydrogen, name="container", color=(1,1,0));
+		containerPhys=containerPhys=G4Support.Placement(container, "containerPhys", logicWorld, pos=(containerPosX,containerPosY,containerPosZ))
+
+		//####largest tube
+
+		G4double largestTubeInnerDiam=12.1412;
+		G4double largestTubeOuterDiam=27.6351;
+		G4double largestTubeHeight = 50.0126;
+		G4double largestTubePosX=0.0;
+		G4double largestTubePosY=0.0;
+		G4double largestTubePosZ=largestTubeHeight/2 - containerHeight/2;
+
+		G4Tubs* largestTube = new G4Tubs("largestTube", largestTubeInnerDiam/2, largestTubeOuterDiam/2, largestTubeHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* largestTubeLogic = new G4LogicalVolume(largestTube, material=Iron, name="largestTubeLogic", color=(1,0,0));
+		largestTubePhys=G4Support.Placement(largestTubeLogic, "largestTubePhys", container, pos=(largestTubePosX,largestTubePosY,largestTubePosZ))
+		//#largestTubeLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( largestTubeLogic, pos=(largestTubePosX,largestTubePosY,largestTubePosZ) )  
+
+		//####middle tube
+
+		G4double middleTubeInnerDiam=7.112;
+		G4double middleTubeOuterDiam=11.6078;
+		G4double middleTubeHeight=36.4236;
+		G4double middleTubePosX=0.0;
+		G4double middleTubePosY=0.0;
+		G4double middleTubePosZ= ( (largestTubeHeight-middleTubeHeight)/2 - 1.4224 + largestTubeHeight/2 ) - containerHeight/2;
+
+		G4Tubs* middleTube = new G4Tubs("middleTube", middleTubeInnerDiam/2, middleTubeOuterDiam/2, middleTubeHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* middleTubeLogic = new G4LogicalVolume(middleTube, material=Iron, name="middleTubeLogic", color=(0,1,0));
+		middleTubePhys=G4Support.Placement(middleTubeLogic, "middleTubePhys", container, pos=(middleTubePosX,middleTubePosY,middleTubePosZ))
+		middleTubeLogic.SetForceWireFrame(1)
+
+		//#sourceAssembly.AddPlacedVolume( middleTubeLogic, pos=(middleTubePosX,middleTubePosY,middleTubePosZ) )  
+
+		//####smallest tube
+
+		G4double smallestTubeInnerDiam=2.5908;
+		G4double smallestTubeOuterDiam=6.604;
+		G4double smallestTubeHeight=32.9438;
+		G4double smallestTubePosX=0.0;
+		G4double smallestTubePosY=0.0;
+		G4double smallestTubePosZ=( (largestTubeHeight-smallestTubeHeight) /2 - 1.4224 -0.4064 + largestTubeHeight/2 ) - containerHeight/2;
+
+		G4Tubs* smallestTube = new G4Tubs("smallestTube", smallestTubeInnerDiam/2, smallestTubeOuterDiam/2, smallestTubeHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* smallestTubeLogic = new G4LogicalVolume(smallestTube, material=Iron, name="smallestTubeLogic", color=(0,0,1));
+		smallestTubePhys=G4Support.Placement(smallestTubeLogic, "smallestTubePhys", container, pos=(smallestTubePosX,smallestTubePosY, smallestTubePosZ))
+		smallestTubeLogic.SetForceWireFrame(1)
+
+		//#sourceAssembly.AddPlacedVolume( smallestTubeLogic, pos=(smallestTubePosX,smallestTubePosY, smallestTubePosZ) )  
+
+		//####cap of the largest tube  
+ 
+		G4double largestCapInnerDiam=8;
+		//#largestCapOuterDiam=27.6351
+		G4double largestCapOuterDiam=middleTubeOuterDiam;
+		G4double largestCapHeight=1.4224;
+		G4double largestCapPosX=0.0;
+		G4double largestCapPosY=0.0;
+		G4double largestCapPosZ=(largestTubeHeight/2 - 1.4224/2 + largestTubeHeight/2) - containerHeight/2;
+
+		G4Tubs* largestCap = new G4Tubs("largestCap", largestCapInnerDiam/2, largestCapOuterDiam/2, largestCapHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* largestCapLogic = new G4LogicalVolume(largestCap, material=Iron, name="largestCapLogic", color=(1,0,0));
+		largestCapPhys=G4Support.Placement(largestCapLogic, "largestCapPhys", container, pos=(largestCapPosX,largestCapPosY,largestCapPosZ))
+		largestCapLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( largestCapLogic, pos=(largestCapPosX,largestCapPosY,largestCapPosZ) )  
+
+
+		//####cap of the middle tube 
+
+		G4double middleCapInnerDiam=0;
+		//#middleCapOuterDiam=11.6078;
+		G4double middleCapOuterDiam=smallestTubeOuterDiam
+		G4double middleCapHeight=0.4064;
+		G4double middleCapPosX=0.0;
+		G4double middleCapPosY=0.0;
+		G4double middleCapPosZ=( (largestTubeHeight -middleCapHeight)/2 - largestCapHeight + largestTubeHeight/2 ) - containerHeight/2;
+
+		G4Tubs* middleCap = new G4Tubs("middleCap", middleCapInnerDiam/2, middleCapOuterDiam/2, middleCapHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* middleCapLogic = new G4LogicalVolume(middleCap, material=Iron, name="middleCapLogic", color=(1,0,0));
+		middleCapPhys=G4Support.Placement(middleCapLogic, "middleCapPhys", container, pos=(middleCapPosX,middleCapPosY,middleCapPosZ))
+		middleCapLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( middleCapLogic, pos=(middleCapPosX,middleCapPosY,middleCapPosZ) )  
+
+		//####cap of the smallest tube 
+		
+		G4double smallestCapInnerDiam=0;
+		G4double smallestCapOuterDiam=2.5908;
+		G4double smallestCapHeight=0.685;
+		G4double smallestCapPosX=0.0;
+		G4double smallestCapPosY=0.0;
+		G4double smallestCapPosZ=( (50.0126 - 32.9438 ) /2 - 1.4224 -0.4064  + (smallestTubeHeight - smallestCapHeight )/2 + largestTubeHeight/2 ) - containerHeight/2;
+
+		G4Tubs* smallestCap = new G4Tubs("smallestCap", smallestCapInnerDiam/2, smallestCapOuterDiam/2, smallestCapHeight/2., 0.0, 2.0*pi);
+		smallestCapCone=G4Core.G4EllipticalCone( "smallestCapCone", smallestCapOuterDiam/2, smallestCapOuterDiam/2, 0.7/2, 0.7/2) 
+
+		smallestCapSolid=G4Core.G4SubtractionSolid("smallestCap-smallestCapCone", smallestCap, smallestCapCone)
+
+		G4LogicalVolume* smallestCapLogic = new G4LogicalVolume(smallestCapSolid, material=Iron, name="smallestCapLogic", color=(0,1,1));
+		smallestCapPhys=G4Support.Placement(smallestCapLogic, "smallestCapPhys", container, pos=(smallestCapPosX,smallestCapPosY,smallestCapPosZ))
+		smallestCapLogic.SetForceSolid(1)	
+
+		//#sourceAssembly.AddPlacedVolume( smallestCapLogic, pos=(smallestCapPosX,smallestCapPosY,smallestCapPosZ) )  
+
+
+		//####backcap of the largest tube 
+		
+		G4double largestBackCapInnerDiam=0;
+		//#largestBackCapOuterDiam=27.6352;
+		G4double largestBackCapOuterDiam=middleTubeOuterDiam;
+		G4double largestBackCapHeight=2.2606;
+		G4double largestBackCapPosX=0.0;
+		G4double largestBackCapPosY=0.0;
+		G4double largestBackCapPosZ= (-largestTubeHeight/2 + largestBackCapHeight/2  + largestTubeHeight/2) -containerHeight/2;
+
+		G4Tubs* largestBackCap = new G4Tubs("largestBackCap", largestBackCapInnerDiam/2, largestBackCapOuterDiam/2, largestBackCapHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* largestBackCapLogic = new G4LogicalVolume(largestBackCap, material=Iron, name="largestBackCapLogic", color=(1,0,0));
+		largestBackCapPhys=G4Support.Placement(largestBackCapLogic, "largestBackCapPhys", container, pos=(largestBackCapPosX,largestBackCapPosY,largestBackCapPosZ))
+		largestBackCapLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( largestBackCapLogic, pos=(largestBackCapPosX,largestBackCapPosY,largestBackCapPosZ) )  
+
+		//####backcap of the middle tube 
+		
+		G4double middleBackCapInnerDiam=0;
+		//#middleBackCapOuterDiam=11.6078
+		G4double middleBackCapOuterDiam=smallestTubeOuterDiam;
+		G4double middleBackCapHeight=2.0574;
+		G4double middleBackCapPosX=0.0;
+		G4double middleBackCapPosY=0.0;
+		G4double middleBackCapPosZ=( middleTubePosZ-middleTubeHeight/2 + middleBackCapHeight/2 );
+
+		G4Tubs* middleBackCap = new G4Tubs("middleBackCap", middleBackCapInnerDiam/2, middleBackCapOuterDiam/2, middleBackCapHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* middleBackCapLogic = new G4LogicalVolume(middleBackCap, material=Iron, name="middleBackCapLogic", color=(1,0,0));
+		middleBackCapPhys=G4Support.Placement(middleBackCapLogic, "middleBackCapPhys", container, pos=(middleBackCapPosX,middleBackCapPosY,middleBackCapPosZ))
+		middleBackCapLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( middleBackCapLogic, pos=(middleBackCapPosX,middleBackCapPosY,middleBackCapPosZ) )  
+
+		//####backcap of the smallest tube 
+		
+		G4double smallestBackCapInnerDiam=0;
+		//#smallestBackCapOuterDiam=6.64
+		G4double smallestBackCapOuterDiam=smallestTubeInnerDiam;
+		G4double smallestBackCapHeight=2;
+		G4double smallestBackCapPosX=0.0;
+		G4double smallestBackCapPosY=0.0;
+		G4double smallestBackCapPosZ=( smallestTubePosZ - smallestTubeHeight/2 + smallestBackCapHeight/2 );
+
+		G4Tubs* smallestBackCap = new G4Tubs("smallestBackCap", smallestBackCapInnerDiam/2, smallestBackCapOuterDiam/2, smallestBackCapHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* smallestBackCapLogic = new G4LogicalVolume(smallestBackCap, material=Iron, name="smallestBackCapLogic", color=(1,0,0));
+		smallestBackCapPhys=G4Support.Placement(smallestBackCapLogic, "smallestBackCapPhys", container, pos=(smallestBackCapPosX,smallestBackCapPosY,smallestBackCapPosZ))
+		smallestBackCapLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( smallestBackCapLogic, pos=(smallestBackCapPosX,smallestBackCapPosY,smallestBackCapPosZ) )  
+
+		//####Cobalt filling
+ 		
+		G4double cobaltInnerDiam=0;
+		G4double cobaltOuterDiam=smallestTubeInnerDiam;
+		G4double cobaltHeight=smallestTubeHeight - smallestBackCapHeight - smallestCapHeight;
+		G4double cobaltPosX=0.0;
+		G4double cobaltPosY=0.0;
+		G4double cobaltPosZ=( smallestTubePosZ + (smallestTubeHeight - cobaltHeight )/2 - smallestCapHeight  );
+		
+
+		G4Tubs* cobalt = new G4Tubs("cobalt", cobaltInnerDiam/2, cobaltOuterDiam/2, cobaltHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* cobaltLogic = new G4LogicalVolume(cobalt, material=Iron, name="cobaltLogic", color=(1,0,0));
+		cobaltPhys=G4Support.Placement(cobaltLogic, "cobaltPhys", container, pos=(cobaltPosX,cobaltPosY,cobaltPosZ))
+		cobaltLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( cobaltLogic, pos=(cobaltPosX,cobaltPosY,cobaltPosZ) )  
+
+
+		//####Tungsten plug
+		
+		G4double tungstenPlugInnerDiam=0;
+		G4double tungstenPlugOuterDiam=12.0142;
+		G4double tungstenPlugHeight=9.271;
+		G4double tungstenPlugPosX=0.0;
+		G4double tungstenPlugPosY=0.0;
+		G4double tungstenPlugPosZ=(middleTubePosZ-middleTubeHeight/2 -tungstenPlugHeight/2 );
+
+		G4Tubs* tungstenPlug = new G4Tubs("tungstenPlug", tungstenPlugInnerDiam/2, tungstenPlugOuterDiam/2, tungstenPlugHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* tungstenPlugLogic = new G4LogicalVolume(tungstenPlug, material=Tungsten, name="tungstenPlugLogic", color=(1,0,0));
+		tungstenPlugPhys=G4Support.Placement(tungstenPlugLogic, "tungstenPlugPhys", container, pos=(tungstenPlugPosX,tungstenPlugPosY,tungstenPlugPosZ))
+		tungstenPlugLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( tungstenPlugLogic, pos=(tungstenPlugPosX,tungstenPlugPosY,tungstenPlugPosZ) )  
+
+
+		//####primary coll
+		
+		G4double primaryCollInnerDiam=6.5;
+		G4double primaryCollOuterDiam=25;
+		G4double primaryCollHeight=51.5;
+		G4double primaryCollPosX=0.0;
+		G4double primaryCollPosY=0.0;
+		G4double primaryCollPosZ= (50.0126/2 + primaryCollHeight/2  + largestTubeHeight/2 ) - containerHeight/2;
+
+		G4Tubs* primaryColl = new G4Tubs("primaryColl", primaryCollInnerDiam/2, primaryCollOuterDiam/2, primaryCollHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* primaryCollLogic = new G4LogicalVolume(primaryColl, material=Iron, name="primaryCollLogic", color=(1,0,0));
+		primaryCollPhys=G4Support.Placement(primaryCollLogic, "primaryCollPhys", container, pos=(primaryCollPosX,primaryCollPosY,primaryCollPosZ))
+		primaryCollLogic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( primaryCollLogic, pos=(primaryCollPosX,primaryCollPosY,primaryCollPosZ) )  
+		
+		G4double primaryColl2InnerDiam=6.5;
+		G4double primaryColl2OuterDiam=25;
+		G4double primaryColl2Height=51.5;
+		G4double primaryColl2PosX=0.0;
+		G4double primaryColl2PosY=0.0;
+		G4double primaryColl2PosZ=( primaryCollPosZ +  primaryColl2Height );
+
+		G4Tubs* primaryColl2 = new G4Tubs("primaryColl2", primaryColl2InnerDiam/2, primaryColl2OuterDiam/2, primaryColl2Height/2., 0.0, 2.0*pi);
+		G4LogicalVolume* primaryColl2Logic = new G4LogicalVolume(primaryColl2, material=Iron, name="primaryColl2Logic", color=(1,0,0));
+		primaryColl2Phys=G4Support.Placement(primaryColl2Logic, "primaryColl2Phys", container, pos=(primaryColl2PosX,primaryColl2PosY,primaryColl2PosZ))
+		primaryColl2Logic.SetForceWireFrame(1)	
+
+		//#sourceAssembly.AddPlacedVolume( primaryColl2Logic, pos=(primaryColl2PosX,primaryColl2PosY,primaryColl2PosZ) )  
+		
+		//####14mm coll
+		
+		G4double coll14OuterDiam=20;
+		G4double coll14Height=89;
+		G4double coll14PosX=0.0;
+		G4double coll14PosY=0.0;
+		G4double coll14PosZ=( primaryColl2PosZ + coll14Height/2 + primaryColl2Height/2 + 1.5 );
+		G4Tubs* coll14body = new G4Tubs("coll14body", 0.0, coll14OuterDiam/2, coll14Height/2, 0.0, 2.0*pi);
+//#bad dir
+//#		G4Cons* coll14coneontheleft = new G4Cons("coll14coneontheleft",0.0, 5/2, 0.0, 6.15/2, 1.0/2, 0.0, 2.0*pi);
+//#		G4Cons* coll14coneinthemiddle = new G4Cons("coll14coneinthemiddle",0.0, 7.85/2, 0.0, 5/2, 87.0/2, 0.0, 2.0*pi);
+//#		G4Cons* coll14coneontheright = new G4Cons("coll14coneontheright",0.0, 9.0/2, 0.0, 7.85/2, 1.0/2, 0.0, 2.0*pi);
+//#good dir
+		G4Cons* coll14coneontheleft = new G4Cons("coll14coneontheleft",0.0, 7.85/2, 0.0, 9.0/2, 1.0/2, 0.0, 2.0*pi);
+		G4Cons* coll14coneinthemiddle = new G4Cons("coll14coneinthemiddle",0.0, 5/2, 0.0, 7.85/2, 87.0/2, 0.0, 2.0*pi);
+		G4Cons* coll14coneontheright = new G4Cons("coll14coneontheright",0.0, 6.15/2, 0.0, 5/2, 1.0/2, 0.0, 2.0*pi);
+		rotationa=G4Core.HepRotation()
+		coll14a=G4Core.G4SubtractionSolid("coll14body-coll14coneontheleft", coll14body, coll14coneontheleft, rotationa, Vector((0.0 ,0.0, 89.0/2)))
+		rotationb=G4Core.HepRotation()
+		coll14b=G4Core.G4SubtractionSolid("coll14body-coll14coneontheleft-coll14coneinthemiddle", coll14a, coll14coneinthemiddle,rotationa , Vector((0.0 ,0.0, 0.0)))
+		rotation=G4Core.HepRotation()
+		coll14=G4Core.G4SubtractionSolid("coll14body-coll14coneontheleft-coll14coneinthemiddle-coll14coneontheright", coll14b, coll14coneontheright,rotation , Vector((0.0 ,0.0, -89.0/2)))
+
+		G4LogicalVolume* coll14Logic = new G4LogicalVolume(coll14, material=Iron, name="coll14Logic", color=(1,1,0));
+		coll14Phys=G4Support.Placement(coll14Logic, "coll14Phys", container, pos=(coll14PosX,coll14PosY,coll14PosZ))
+		//#coll14Logic.SetForceWireFrame(1)	
+		coll14Logic.SetForceSolid(1)
+
+		//#sourceAssembly.AddPlacedVolume( coll4Logic, pos=(coll4PosX,coll4PosY,coll4PosZ) )  
+
+		//#sourceAssembly.MakeImprint( logicWorld, pos=(0, 0, 0) )       
+
+		
+		//####target
+		//#target=G4Core.G4Box("target", 1, 1, 1)
+		//#G4LogicalVolume* targetLogic= new G4LogicalVolume(target, material=Iron, name="targetLogic", color=(0,1,0));
+		//#targetPhys=G4Support.Placement(targetLogic, "targetPhys", logicWorld, pos=(0, 0, coll4PosZ+coll4Height/2+100) )
+
+
+		//####Source shielding  
+
+		G4double sourceShieldingInnerDiam=27.6352;
+		G4double sourceShieldingOuterDiam=107.6352;
+		G4double sourceShieldingHeight=50.0126 + 103;
+		G4double sourceShieldingPosX=0.0;
+		G4double sourceShieldingPosY=0.0;
+		G4double sourceShieldingPosZ= sourceShieldingHeight/2 - containerHeight/2;
+
+		G4Tubs* sourceShielding = new G4Tubs("sourceShielding", sourceShieldingInnerDiam/2, sourceShieldingOuterDiam/2, sourceShieldingHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* sourceShieldingLogic = new G4LogicalVolume(sourceShielding, material=Iron, name="sourceShieldingLogic", color=(1,0,0));
+		sourceShieldingPhys=G4Support.Placement(sourceShieldingLogic, "sourceShieldingPhys", container, pos=(sourceShieldingPosX,sourceShieldingPosY,sourceShieldingPosZ))
+		sourceShieldingLogic->SetForceWireFrame(true);
+		//#sourceShieldingLogic->SetForceSolid(true);
+
+		//####Collimator shielding  
+
+		G4double collimatorShieldingInnerDiam=20;
+		G4double collimatorShieldingOuterDiam=107.6352;
+		G4double collimatorShieldingHeight=89;
+		G4double collimatorShieldingPosX=0.0;
+		G4double collimatorShieldingPosY=0.0;
+		G4double collimatorShieldingPosZ= ( primaryColl2PosZ + coll14Height/2 + primaryColl2Height/2 + 1.5 );
+
+		G4Tubs* collimatorShielding = new G4Tubs("collimatorShielding", collimatorShieldingInnerDiam/2, collimatorShieldingOuterDiam/2, collimatorShieldingHeight/2., 0.0, 2.0*pi);
+		G4LogicalVolume* collimatorShieldingLogic = new G4LogicalVolume(collimatorShielding, material=Iron, name="collimatorLogic", color=(1,0,0));
+		collimatorShieldingPhys=G4Support.Placement(collimatorShieldingLogic, "collimatorShieldingPhys", container, pos=(collimatorShieldingPosX,collimatorShieldingPosY,collimatorShieldingPosZ))
+		collimatorShieldingLogic.SetForceWireFrame(1)
+		//#collimatorShieldingLogic.SetForceSolid(1)
+		
+		
+		//####plexi
+		G4double plexiInnerDiam= 0.0;
+		G4double plexiOuterDiam= 107.6352;
+		G4double plexiHeight = 2.0;
+		G4double plexiPosX=0.0;
+		G4double plexiPosY=0.0;
+		G4double plexiPosZ=0.0;
+		
+		G4Tubs* plexiSolid = new G4Tubs("plexiSolid", plexiInnerDiam/2, plexiOuterDiam/2, plexiHeight/2, 0.0, 2.0*pi);
+		G4LogicalVolume* plexiLogic = new G4LogicalVolume(plexiSolid, material=Plexiglas, name="plexi", color=(0,1,0));
+		plexiPhys=plexiPhys=G4Support.Placement(plexiLogic, "plexiPhys", logicWorld, pos=(plexiPosX,plexiPosY,plexiPosZ))
+		plexiLogic.SetForceSolid(1)
+*/
+
+ /* 
   //                               
   // Calorimeter
   //  
@@ -634,16 +1072,17 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 			0);
   }
     
-  PrintCalorParameters();     
+  //PrintCalorParameters();     
   
   //                                        
   // Visualization attributes
   //
+  */
   logicWorld->SetVisAttributes (G4VisAttributes::Invisible);
 
-  G4VisAttributes* simpleBoxVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
-  simpleBoxVisAtt->SetVisibility(true);
-  logicCalor->SetVisAttributes(simpleBoxVisAtt);
+  //G4VisAttributes* simpleBoxVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,1.0));
+  //simpleBoxVisAtt->SetVisibility(true);
+  //logicCalor->SetVisAttributes(simpleBoxVisAtt);
 
  /*
   // Below are vis attributes that permits someone to test / play 
@@ -675,7 +1114,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void DetectorConstruction::PrintCalorParameters()
+/*void DetectorConstruction::PrintCalorParameters()
 {
   G4cout << "\n------------------------------------------------------------"
          << "\n---> The calorimeter is " << NbOfLayers << " layers of: [ "
@@ -683,11 +1122,11 @@ void DetectorConstruction::PrintCalorParameters()
          << " + "
          << GapThickness/mm << "mm of " << GapMaterial->GetName() << " ] " 
          << "\n------------------------------------------------------------\n";
-}
+}*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void DetectorConstruction::SetAbsorberMaterial(G4String materialChoice)
+/*void DetectorConstruction::SetAbsorberMaterial(G4String materialChoice)
 {
   // search the material by its name   
   G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
@@ -776,10 +1215,11 @@ void DetectorConstruction::SetCalorSizeYZ(G4double val)
 void DetectorConstruction::SetNbOfLayers(G4int val)
 {
   NbOfLayers = val;
-}
+}*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/*
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
 
@@ -800,6 +1240,7 @@ void DetectorConstruction::SetMagField(G4double fieldValue)
     fieldMgr->SetDetectorField(magField);
   }
 }
+*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
