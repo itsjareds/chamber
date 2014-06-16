@@ -53,6 +53,8 @@
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 
+#include <vector>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 DetectorConstruction::DetectorConstruction()
@@ -199,7 +201,7 @@ new G4Material("Tungsten", density=19.25*g/cm3, ncomponents=1);
 Tungsten->AddElement(W, fractionmass=1);
 
 G4Material* Hydrogen =
-new G4Material("Hydrogen", density=0.08988*g/L, ncomponents=1);
+new G4Material("Hydrogen", density=0.00008988*g/cm3, ncomponents=1);
 Hydrogen->AddElement(H, fractionmass=1);
 
 //
@@ -442,14 +444,20 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 
  // Pasted from fixedbeam30.py
 		
-/*		int firstlayer=0;
+		int firstlayer=0;
 		int lastlayer=303; //#255
 		//#dataset_shape=(128,256,256)
-		dataset_shape=(512,512, 303) 
-		keep_organs=[4]
+		std::vector<int> dataset_shape;
+		dataset_shape.push_back(512);
+		dataset_shape.push_back(512);
+		dataset_shape.push_back(303);
+
+		std::vector<int> keep_organs;
+		keep_organs.push_back(4);
 		//#keep_organs=[0, 2, 4]
 				
-		detailedLayers=None
+		//uncomment later maybe
+		//detailedLayers=None
 		G4double visFraction=0.0001;
 		G4double x_pixel_size=0.625*mm;
 		G4double y_pixel_size=0.625*mm;
@@ -461,7 +469,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 
 		
 		G4String tissueMapFile="zubal_head_map.txt";
-		
+/*		
 		quads, material_key=read_zubal_key(tissueMapFile)
 		data=smoother_debrecen.voxel_file(filename=voxelFile, shape=dataset_shape,
 			deltas=(x_pixel_size, y_pixel_size, z_pixel_size) )
@@ -469,7 +477,9 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		materials_info=create_zubal_materials()
 		
 		G4double zcount=lastlayer-firstlayer;
-		xcount, ycount, junk = dataset_shape
+		int xcount = dataset_shape[0];
+		int ycount = dataset_shape[1];
+		int junk = dataset_shape[2];
 	
 		// Uncomment later?
 		//print xcount, ycount, zcount, Vector((x_pixel_size, y_pixel_size, z_pixel_size))
@@ -480,12 +490,18 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 				Vector((x_pixel_size, y_pixel_size, z_pixel_size)),
 				visFraction)
 					
-			colors={	'skin':G4Core.G4Colour(1,0,0, 0.5), 
-						'fat':G4Core.G4Colour(0,1,0, 0.5), 
-						'skull':G4Core.G4Colour(0,0,1,1), 
-						'jaw bone':G4Core.G4Colour(1,1,0,1), 
-						'cerebral fluid': G4Core.G4Colour(0,1,1,1)
-			}
+			//colors={	'skin':G4Core.G4Colour(1,0,0, 0.5), 
+			//			'fat':G4Core.G4Colour(0,1,0, 0.5), 
+			//			'skull':G4Core.G4Colour(0,0,1,1), 
+			//			'jaw bone':G4Core.G4Colour(1,1,0,1), 
+			//			'cerebral fluid': G4Core.G4Colour(0,1,1,1)
+			//}
+
+			G4Colour skin(1,0,0);
+			G4Colour fat(0,1,0);
+			G4Colour skull(0,0,1);
+			G4Colour jawbone(1,1,0);
+			G4Colour cerebral_fluid(0,1,1);
 					
 			vis_attr_list=[]
 			faded=G4Core.G4Colour(1,1,1,1)
@@ -508,7 +524,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 					v.SetLineWidth(0.0)
 				}
 
-				vis_attr_list.append(v) //#keep ownership since we didn't disown these
+				vis_attr_list.push_back(v); //#keep ownership since we didn't disown these
 				compressor.SetOrganVisAttributes(orgidx, v)
 			
 			logic_vol=compressor.AssembleGeometry(physiWorld, "zubal", materials_info.air)
@@ -858,7 +874,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		
 		G4Tubs* plexiSolid = new G4Tubs("plexiSolid", plexiInnerDiam/2, plexiOuterDiam/2, plexiHeight/2, 0.0, 2.0*pi);
 		G4LogicalVolume* plexiLogic = new G4LogicalVolume(plexiSolid, material=Plexiglas, name="plexi", color=(0,1,0));
-		plexiPhys=plexiPhys=G4Support.Placement(plexiLogic, "plexiPhys", logicWorld, pos=(plexiPosX,plexiPosY,plexiPosZ))
+		plexiPhys=G4Support.Placement(plexiLogic, "plexiPhys", logicWorld, pos=(plexiPosX,plexiPosY,plexiPosZ))
 		plexiLogic.SetForceSolid(1)
 */
 
