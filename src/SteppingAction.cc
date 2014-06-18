@@ -68,14 +68,14 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
   G4double stepl = 0.;
   if (aStep->GetTrack()->GetDefinition()->GetPDGCharge() != 0.)
     stepl = aStep->GetStepLength();
-      
+/*      
   if (volume == detector->GetAbsorber())  eventaction->AddAbs(edep,stepl);
   if (volume == detector->GetGap())       eventaction->AddGap(edep,stepl);
   if (volume == detector->GetAbsorber2()) eventaction->AddAbs2(edep,stepl);
   if (volume == detector->GetGap2())      eventaction->AddGap2(edep,stepl);
   if (volume == detector->GetAbsorber3()) eventaction->AddAbs3(edep,stepl);
   if (volume == detector->GetGap3())	  eventaction->AddGap3(edep,stepl);
-  
+*/
   //example of saving random number seed of this event, under condition
   //// if (condition) G4RunManager::GetRunManager()->rndmSaveThisEvent(); 
 }

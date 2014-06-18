@@ -54,7 +54,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
    ~DetectorConstruction();
 
   public:
-     
+     /*
      void SetAbsorberMaterial (G4String);     
      void SetAbsorberThickness(G4double);
      void SetAbsorber2Material (G4String);
@@ -73,6 +73,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
      void SetNbOfLayers (G4int);   
       
      void SetMagField(G4double);
+     */
      
      G4VPhysicalVolume* Construct();
 
@@ -81,13 +82,16 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   public:
   
      void PrintCalorParameters(); 
-                    
+     
+     
      G4double GetWorldSizeX()           {return WorldSizeX;}; 
      G4double GetWorldSizeYZ()          {return WorldSizeYZ;};
      
-     G4double GetCalorThickness()       {return CalorThickness;}; 
+     
+     //G4double GetCalorThickness()       {return CalorThickness;}; 
      G4double GetCalorSizeYZ()          {return CalorSizeYZ;};
-      
+     
+     /*
      G4int GetNbOfLayers()              {return NbOfLayers;}; 
      
      G4Material* GetAbsorberMaterial()  {return AbsorberMaterial;};
@@ -115,9 +119,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
      const G4VPhysicalVolume* GetGap()        {return physiGap;};
      const G4VPhysicalVolume* GetGap2()       {return physiGap2;};
      const G4VPhysicalVolume* GetGap3()       {return physiGap3;};
+     */
                  
   private:
-     
+     /*
      G4Material*        AbsorberMaterial;
      G4double           AbsorberThickness;
 
@@ -140,11 +145,18 @@ class DetectorConstruction : public G4VUserDetectorConstruction
      G4double           LayerThickness;
      G4double           Layer2Thickness;
      G4double		Layer3Thickness;
+     */
           
      G4double           CalorSizeYZ;
-     G4double           CalorThickness;
+     //G4double           CalorThickness;
+     
      
      G4Material*        defaultMaterial;
+     G4Material*        Iron;
+     G4Material*        Tungsten;
+     G4Material*        Plexiglas;
+     G4Material*        Hydrogen;
+
      G4double           WorldSizeYZ;
      G4double           WorldSizeX;
             
@@ -152,6 +164,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
      G4LogicalVolume*   logicWorld;    //pointer to the logical World
      G4VPhysicalVolume* physiWorld;    //pointer to the physical World
 
+     /*
      G4Box*             solidCalor;    //pointer to the solid Calor 
      G4LogicalVolume*   logicCalor;    //pointer to the logical Calor
      G4VPhysicalVolume* physiCalor;    //pointer to the physical Calor
@@ -191,8 +204,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
      G4Box*		solidGap3;
      G4LogicalVolume*	logicGap3;
      G4VPhysicalVolume*	physiGap3;
+     */
      
-     G4UniformMagField* magField;      //pointer to the magnetic field
+     //G4UniformMagField* magField;      //pointer to the magnetic field
      
      DetectorMessenger* detectorMessenger;  //pointer to the Messenger
       
