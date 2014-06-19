@@ -532,7 +532,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 			
 			logic_vol=compressor.AssembleGeometry(physiWorld, "zubal", materials_info.air)
 						
-			phantomPhys = G4Support.Placement(logic_vol, "phantom", parent=logicWorld, pos=(0.,0.,0.))
+			G4PVPlacement* phantomPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(0.,0.,0.), logic_vol, "phantom", parent=logicWorld, false, 0);
 
 			for orgidx in keep_organs:
 				compressor.AddKeptOrgan(orgidx)
@@ -577,8 +577,10 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		//uncomment later
 		G4LogicalVolume* container = new G4LogicalVolume(containerSolid, /*material=*/Hydrogen, /*name=*/"container");
 				//, /*color=*/jawbone);
+		
+		G4RotationMatrix* zero_rotation = new G4RotationMatrix();
 		//uncomment later
-		//containerPhys=G4Support.Placement(container, "containerPhys", logicWorld, pos=(containerPosX,containerPosY,containerPosZ))
+		G4PVPlacement* containerPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(containerPosX,containerPosY,containerPosZ), container, "containerPhys", logicWorld, false, 0);
 
 		//####largest tube
 
@@ -594,7 +596,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* largestTubeLogic = new G4LogicalVolume(largestTube, /*material=*/Iron, /*name=*/"largestTubeLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//largestTubePhys=G4Support.Placement(largestTubeLogic, "largestTubePhys", container, pos=(largestTubePosX,largestTubePosY,largestTubePosZ))
+		G4PVPlacement* largestTubePhys = new G4PVPlacement(zero_rotation, G4ThreeVector(largestTubePosX,largestTubePosY,largestTubePosZ), largestTubeLogic, "largestTubePhys", container, false, 0);
 		//#largestTubeLogic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( largestTubeLogic, pos=(largestTubePosX,largestTubePosY,largestTubePosZ) )  
@@ -613,7 +615,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* middleTubeLogic = new G4LogicalVolume(middleTube, /*material=*/Iron, /*name=*/"middleTubeLogic");
 				//, /*color=*/fat);
 		//uncomment later
-		//middleTubePhys=G4Support.Placement(middleTubeLogic, "middleTubePhys", container, pos=(middleTubePosX,middleTubePosY,middleTubePosZ))
+		G4PVPlacement* middleTubePhys = new G4PVPlacement(zero_rotation, G4ThreeVector(middleTubePosX,middleTubePosY,middleTubePosZ), middleTubeLogic, "middleTubePhys", container, false, 0);
 		//middleTubeLogic.SetForceWireFrame(1)
 
 		//#sourceAssembly.AddPlacedVolume( middleTubeLogic, pos=(middleTubePosX,middleTubePosY,middleTubePosZ) )  
@@ -632,7 +634,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* smallestTubeLogic = new G4LogicalVolume(smallestTube, /*material=*/Iron, /*name=*/"smallestTubeLogic");
 				//, /*color=*/skull);
 		//uncomment later
-		//smallestTubePhys=G4Support.Placement(smallestTubeLogic, "smallestTubePhys", container, pos=(smallestTubePosX,smallestTubePosY, smallestTubePosZ))
+		G4PVPlacement* smallestTubePhys = new G4PVPlacement(zero_rotation, G4ThreeVector(smallestTubePosX,smallestTubePosY, smallestTubePosZ), smallestTubeLogic, "smallestTubePhys", container, false, 0);
 		//smallestTubeLogic.SetForceWireFrame(1)
 
 		//#sourceAssembly.AddPlacedVolume( smallestTubeLogic, pos=(smallestTubePosX,smallestTubePosY, smallestTubePosZ) )  
@@ -652,7 +654,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* largestCapLogic = new G4LogicalVolume(largestCap, /*material=*/Iron, /*name=*/"largestCapLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//largestCapPhys=G4Support.Placement(largestCapLogic, "largestCapPhys", container, pos=(largestCapPosX,largestCapPosY,largestCapPosZ))
+		G4PVPlacement* largestCapPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(largestCapPosX,largestCapPosY,largestCapPosZ), largestCapLogic, "largestCapPhys", container, false, 0);
 		//largestCapLogic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( largestCapLogic, pos=(largestCapPosX,largestCapPosY,largestCapPosZ) )  
@@ -673,7 +675,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* middleCapLogic = new G4LogicalVolume(middleCap, /*material=*/Iron, /*name=*/"middleCapLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//middleCapPhys=G4Support.Placement(middleCapLogic, "middleCapPhys", container, pos=(middleCapPosX,middleCapPosY,middleCapPosZ))
+		G4PVPlacement* middleCapPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(middleCapPosX,middleCapPosY,middleCapPosZ), middleCapLogic, "middleCapPhys", container, false, 0);
 		//middleCapLogic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( middleCapLogic, pos=(middleCapPosX,middleCapPosY,middleCapPosZ) )  
@@ -698,7 +700,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* smallestCapLogic = new G4LogicalVolume(smallestCapSolid, /*material=*/Iron, /*name=*/"smallestCapLogic");
 				//, /*color=*/cerebral_fluid);
 		//uncomment later
-		//smallestCapPhys=G4Support.Placement(smallestCapLogic, "smallestCapPhys", container, pos=(smallestCapPosX,smallestCapPosY,smallestCapPosZ))
+		G4PVPlacement* smallestCapPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(smallestCapPosX,smallestCapPosY,smallestCapPosZ), smallestCapLogic, "smallestCapPhys", container, false, 0);
 		//smallestCapLogic.SetForceSolid(1)	
 
 		//#sourceAssembly.AddPlacedVolume( smallestCapLogic, pos=(smallestCapPosX,smallestCapPosY,smallestCapPosZ) )  
@@ -719,7 +721,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* largestBackCapLogic = new G4LogicalVolume(largestBackCap, /*material=*/Iron, /*name=*/"largestBackCapLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//largestBackCapPhys=G4Support.Placement(largestBackCapLogic, "largestBackCapPhys", container, pos=(largestBackCapPosX,largestBackCapPosY,largestBackCapPosZ))
+		G4PVPlacement* largestBackCapPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(largestBackCapPosX,largestBackCapPosY,largestBackCapPosZ), largestBackCapLogic, "largestBackCapPhys", container, false, 0);
 		//largestBackCapLogic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( largestBackCapLogic, pos=(largestBackCapPosX,largestBackCapPosY,largestBackCapPosZ) )  
@@ -739,7 +741,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* middleBackCapLogic = new G4LogicalVolume(middleBackCap, /*material=*/Iron, /*name=*/"middleBackCapLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//middleBackCapPhys=G4Support.Placement(middleBackCapLogic, "middleBackCapPhys", container, pos=(middleBackCapPosX,middleBackCapPosY,middleBackCapPosZ))
+		G4PVPlacement* middleBackCapPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(middleBackCapPosX,middleBackCapPosY,middleBackCapPosZ), middleBackCapLogic, "middleBackCapPhys", container, false, 0);
 		//middleBackCapLogic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( middleBackCapLogic, pos=(middleBackCapPosX,middleBackCapPosY,middleBackCapPosZ) )  
@@ -759,7 +761,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* smallestBackCapLogic = new G4LogicalVolume(smallestBackCap, /*material=*/Iron, /*name=*/"smallestBackCapLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//smallestBackCapPhys=G4Support.Placement(smallestBackCapLogic, "smallestBackCapPhys", container, pos=(smallestBackCapPosX,smallestBackCapPosY,smallestBackCapPosZ))
+		G4PVPlacement* smallestBackCapPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(smallestBackCapPosX,smallestBackCapPosY,smallestBackCapPosZ), smallestBackCapLogic, "smallestBackCapPhys", container, false, 0);
 		//uncomment later
 		//smallestBackCapLogic.SetForceWireFrame(1)	
 
@@ -780,7 +782,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* cobaltLogic = new G4LogicalVolume(cobalt, /*material=*/Iron, /*name=*/"cobaltLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//cobaltPhys=G4Support.Placement(cobaltLogic, "cobaltPhys", container, pos=(cobaltPosX,cobaltPosY,cobaltPosZ))
+		G4PVPlacement* cobaltPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(cobaltPosX,cobaltPosY,cobaltPosZ), cobaltLogic, "cobaltPhys", container, false, 0);
 		//cobaltLogic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( cobaltLogic, pos=(cobaltPosX,cobaltPosY,cobaltPosZ) )  
@@ -800,7 +802,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* tungstenPlugLogic = new G4LogicalVolume(tungstenPlug, /*material=*/Tungsten, /*name=*/"tungstenPlugLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//tungstenPlugPhys=G4Support.Placement(tungstenPlugLogic, "tungstenPlugPhys", container, pos=(tungstenPlugPosX,tungstenPlugPosY,tungstenPlugPosZ))
+		G4PVPlacement* tungstenPlugPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(tungstenPlugPosX,tungstenPlugPosY,tungstenPlugPosZ), tungstenPlugLogic, "tungstenPlugPhys", container, false, 0);
 		//tungstenPlugLogic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( tungstenPlugLogic, pos=(tungstenPlugPosX,tungstenPlugPosY,tungstenPlugPosZ) )  
@@ -820,7 +822,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* primaryCollLogic = new G4LogicalVolume(primaryColl, /*material=*/Iron, /*name=*/"primaryCollLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//primaryCollPhys=G4Support.Placement(primaryCollLogic, "primaryCollPhys", container, pos=(primaryCollPosX,primaryCollPosY,primaryCollPosZ))
+		G4PVPlacement* primaryCollPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(primaryCollPosX,primaryCollPosY,primaryCollPosZ), primaryCollLogic, "primaryCollPhys", container, false, 0);
 		//primaryCollLogic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( primaryCollLogic, pos=(primaryCollPosX,primaryCollPosY,primaryCollPosZ) )  
@@ -837,7 +839,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* primaryColl2Logic = new G4LogicalVolume(primaryColl2, /*material=*/Iron, /*name=*/"primaryColl2Logic");
 				//, /*color=*/skin);
 		//uncomment later
-		//primaryColl2Phys=G4Support.Placement(primaryColl2Logic, "primaryColl2Phys", container, pos=(primaryColl2PosX,primaryColl2PosY,primaryColl2PosZ))
+		G4PVPlacement* primaryColl2Phys = new G4PVPlacement(zero_rotation, G4ThreeVector(primaryColl2PosX,primaryColl2PosY,primaryColl2PosZ), primaryColl2Logic, "primaryColl2Phys", container, false, 0);
 		//primaryColl2Logic.SetForceWireFrame(1)	
 
 		//#sourceAssembly.AddPlacedVolume( primaryColl2Logic, pos=(primaryColl2PosX,primaryColl2PosY,primaryColl2PosZ) )  
@@ -870,7 +872,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* coll14Logic = new G4LogicalVolume(coll14, /*material=*/Iron, /*name=*/"coll14Logic");
 				//, /*color=*/jawbone);
 		//uncomment later
-		//coll14Phys=G4Support.Placement(coll14Logic, "coll14Phys", container, pos=(coll14PosX,coll14PosY,coll14PosZ))
+		G4PVPlacement* coll14Phys = new G4PVPlacement(zero_rotation, G4ThreeVector(coll14PosX,coll14PosY,coll14PosZ), coll14Logic, "coll14Phys", container, false, 0);
 		//#coll14Logic.SetForceWireFrame(1)	
 		//coll14Logic.SetForceSolid(1)
 
@@ -899,7 +901,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* sourceShieldingLogic = new G4LogicalVolume(sourceShielding, /*material=*/Iron, /*name=*/"sourceShieldingLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//sourceShieldingPhys=G4Support.Placement(sourceShieldingLogic, "sourceShieldingPhys", container, pos=(sourceShieldingPosX,sourceShieldingPosY,sourceShieldingPosZ))
+		G4PVPlacement* sourceShieldingPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(sourceShieldingPosX,sourceShieldingPosY,sourceShieldingPosZ), sourceShieldingLogic, "sourceShieldingPhys", container, false, 0);
 		//uncomment later
 		//sourceShieldingLogic->SetForceWireFrame(true);
 		//#sourceShieldingLogic->SetForceSolid(true);
@@ -918,7 +920,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* collimatorShieldingLogic = new G4LogicalVolume(collimatorShielding, /*material=*/Iron, /*name=*/"collimatorLogic");
 				//, /*color=*/skin);
 		//uncomment later
-		//collimatorShieldingPhys=G4Support.Placement(collimatorShieldingLogic, "collimatorShieldingPhys", container, pos=(collimatorShieldingPosX,collimatorShieldingPosY,collimatorShieldingPosZ))
+		G4PVPlacement* collimatorShieldingPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(collimatorShieldingPosX,collimatorShieldingPosY,collimatorShieldingPosZ), collimatorShieldingLogic, "collimatorShieldingPhys", container, false, 0);
 		//collimatorShieldingLogic.SetForceWireFrame(1)
 		//#collimatorShieldingLogic.SetForceSolid(1)
 		
@@ -936,7 +938,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructCalorimeter()
 		G4LogicalVolume* plexiLogic = new G4LogicalVolume(plexiSolid, /*material=*/Plexiglas, /*name=*/"plexi");
 				//, /*color=*/fat);
 		//uncomment later
-		//plexiPhys=G4Support.Placement(plexiLogic, "plexiPhys", logicWorld, pos=(plexiPosX,plexiPosY,plexiPosZ))
+		G4PVPlacement* plexiPhys = new G4PVPlacement(zero_rotation, G4ThreeVector(plexiPosX,plexiPosY,plexiPosZ), plexiLogic, "plexiPhys", logicWorld, false, 0);
 		//plexiLogic.SetForceSolid(1)
 
  /* 
