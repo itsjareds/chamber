@@ -10,7 +10,4 @@ Makefile
 cmake_install.cmake
 currentEvent.rndm
 currentRun.rndm
-coord
 fixedbeam30.py
-geometry
-materials
