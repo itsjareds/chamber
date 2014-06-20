@@ -5,12 +5,12 @@
 
 /gps/pos/type Beam
 /gps/pos/shape Circle
-/gps/pos/centre -3. 0. 0. cm
-/gps/pos/radius 3. cm
+/gps/pos/centre 0. 0. 13. cm
+/gps/pos/radius 0.001 cm
 
-/gps/pos/rot1 0 0 1 
+/gps/pos/rot1 0 0 0 
 
-/gps/direction 1 0 0
+/gps/direction -1 -1 -1
 
 /gps/ene/type Gauss
 /gps/ene/mono 3. keV
@@ -24,12 +24,12 @@
 
 /gps/pos/type Beam
 /gps/pos/shape Circle
-/gps/pos/centre -3. 0. 0. cm
-/gps/pos/radius 3. cm
+/gps/pos/centre 0. 0. 0. cm
+/gps/pos/radius 0.001 cm
 
-/gps/pos/rot1 0 0 1 
+/gps/pos/rot1 0 0 0 
 
-/gps/direction 1 0 0
+/gps/direction 0 0 0
 
 /gps/ene/type Gauss
 /gps/ene/mono 3.5 keV
