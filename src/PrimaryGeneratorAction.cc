@@ -402,32 +402,6 @@ if nIons>0:
 		
 	#this function will get run in a thread.  It, in turn, spins off the actual G4ant4 sim in another thread
 	#and releases control, so smoothing can be done in parallel
-	def runsweep(n_events, thetaDeg, deltatheta):
-#		for conv_point in conv_point_list:
-		for i in range(30):
-
-		### translation and rotation
-			x = math.sin( sources[i][1] *deg) * ( - (sources[i][2]-1.5 ) )
-			y = math.sqrt( ( sources[i][2]-1.5 )*(sources[i][2]-1.5 ) - x*x )
-			z = -sources[i][3]
-	
-			rotationX=G4Core.HepRotation()
-			rotationZ=G4Core.HepRotation()
-			rotationX.rotateX( (-90+sources[i][0])*deg )
-			rotationZ.rotateZ( -sources[i][1] *deg )
-			source_distance=math.sqrt(x*x+y*y+z*z)
-			new_point=Vector((x,y,z))
-			#print "HAHO",x,y,z, x*x+y*y+z*z
-			gunAxis=Vector((-x/source_distance, -y/source_distance, -z/source_distance ))
-		#### rotation end
-			for thetaStep in range(thetaDeg, thetaDeg+deltatheta, 360):
-				set_source(new_point, rotationX, rotationZ, thetaStep, gunAxis)				
-				#randomize((189554476, 1193620722))
-				#print "*****seeds: ", thetaStep, (mainVars.myGenerator.GetSeedWord(0), mainVars.myGenerator.GetSeedWord(1))
-				th=G4Support.RunAsync(n_events) #this is qthreaded!
-				th.join() #let it finish
-				#print "*****final seeds: ", thetaStep,  get_seeds(mainVars)
-			
 	for thetaDeg in range(theta_start, theta_finish+1, deltatheta): #take final step at end, by setting the upper bound to end+1, to get last smoothing done
 		#create a thread with the runsweep function in it, and let it run
 		if thetaDeg != theta_finish: #not final pass, go ahead and start a sim
@@ -451,3 +425,35 @@ if nIons>0:
 	resamp=muvals.convert_flux_to_dose(smooth)
 	smoother_debrecen.create_dx_output(runName, muvals, resamp)
 */
+void runsweep(G4int n_events, G4double thetaDeg, G4double deltatheta)
+{
+//#		for conv_point in conv_point_list:
+		for (G4int i = 0; i < 30; ++i) {
+/*
+		//### translation and rotation
+			x = math.sin( sources[i][1] *deg) * ( - (sources[i][2]-1.5 ) )
+			y = math.sqrt( ( sources[i][2]-1.5 )*(sources[i][2]-1.5 ) - x*x )
+			z = -sources[i][3]
+	
+			rotationX=G4Core.HepRotation()
+			rotationZ=G4Core.HepRotation()
+			rotationX.rotateX( (-90+sources[i][0])*deg )
+			rotationZ.rotateZ( -sources[i][1] *deg )
+			source_distance=math.sqrt(x*x+y*y+z*z)
+			new_point=Vector((x,y,z))
+			//#print "HAHO",x,y,z, x*x+y*y+z*z
+			gunAxis=Vector((-x/source_distance, -y/source_distance, -z/source_distance ))
+*/
+		//#### rotation end
+			for (G4double thetaStep = thetaDeg; thetaStep < thetaDeg+deltatheta; thetaStep += 360) { //in range(thetaDeg, thetaDeg+deltatheta, 360):
+				/*
+				set_source(new_point, rotationX, rotationZ, thetaStep, gunAxis)				
+				//#randomize((189554476, 1193620722))
+				//#print "*****seeds: ", thetaStep, (mainVars.myGenerator.GetSeedWord(0), mainVars.myGenerator.GetSeedWord(1))
+				th=G4Support.RunAsync(n_events) #this is qthreaded!
+				th.join() #let it finish
+				//#print "*****final seeds: ", thetaStep,  get_seeds(mainVars)
+				*/
+			}
+		}
+}
